@@ -6,6 +6,9 @@ module.exports = {
   mode: "development",
   devtool: "inline-source-map",
   entry: "./www/src/index.tsx",
+  devServer: {
+    port: 3000
+  },
   output: {
     path: path.resolve(__dirname, '../www/build'),
     filename: "bundle.js",
