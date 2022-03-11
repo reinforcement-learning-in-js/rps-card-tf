@@ -9,14 +9,15 @@ export class RPSCard {
         return `${this.toStringDeck(gameState.myCards)}/${this.toStringDeck(gameState.oppCards)}/${gameState.point}`
     }
 
-    getActions(myCards: Deck): string[] {
-        const actions = []
-        for (const [key, value] of Object.entries(myCards)) {
-            if (value > 0) {
-                actions.push(key)
-            }
-        }
-        return actions
+    getActions(myCards: Deck): boolean[] {
+        return Object.values(myCards).map((val) => val>0)
+    }
+
+    flattenState(gameState: GameState): number[] {
+        // for tensorflow training
+        const my = Object.values(gameState.myCards)
+        const opp = Object.values(gameState.oppCards)
+        return my.concat(opp, gameState.point)
     }
 
     isEnd(gameState: GameState): boolean {
@@ -47,13 +48,13 @@ export class RPSCard {
         }
     }
 
-    getNextCard(cards: Deck, action: string) {
+    getNextCard(cards: Deck, action: number) {
         const nextCards: Deck = {...cards}
         nextCards[action] -= 1
         return nextCards
     }
     
-    getNextPoint(myAction: string, oppAction: string, point: number[]): number[] {
+    getNextPoint(myAction: number, oppAction: number, point: number[]): number[] {
         const nextPoint = point.slice()
         if (myAction === oppAction) {
             return nextPoint
@@ -82,7 +83,7 @@ export class RPSCard {
         return nextPoint
     }
 
-    getNextState(gameState: GameState, myAction: string, oppAction: string): GameState {
+    getNextState(gameState: GameState, myAction: number, oppAction: number): GameState {
         const nextState: GameState = {
             myCards: this.getNextCard(gameState.myCards, myAction),
             oppCards: this.getNextCard(gameState.oppCards, oppAction),

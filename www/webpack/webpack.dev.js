@@ -22,15 +22,23 @@ module.exports = {
       {
         test: /\.(tsx?)$/,
         use: [
-          'babel-loader',
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                "@babel/preset-react",
+                "@babel/preset-env",
+                "@babel/preset-typescript"
+              ]
+            }
+          },
           {
             loader: 'ts-loader',
             options: {
               transpileOnly: true
             }
           }
-        ],
-        exclude: /node_modules/,
+        ]
       }
     ]
   },

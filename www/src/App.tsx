@@ -1,4 +1,4 @@
-import { RPSCard } from '../../src/RPSCard'
+
 import type { GameState, Deck } from '../../src/GameState'
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
     return <div>
         <h1>
             {rps.getKey(state)}
-            hello, world!
+            hello, world! +1
         </h1>
     </div>
 }
