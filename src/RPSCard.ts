@@ -1,32 +1,25 @@
-import { Deck, GameState } from "./GameState"
+import { GameState } from "./GameState"
 
 export class RPSCard {
-    toStringDeck(d: Deck): string {
-        return `[${d.R}R,${d.P}P,${d.S}S,${d.J}J]`
+    toStringDeck(d: number[]): string {
+        return `[${d[0]}R,${d[1]}P,${d[2]}S,${d[3]}J]`
     }
 
     getKey(gameState: GameState): string {
         return `${this.toStringDeck(gameState.myCards)}/${this.toStringDeck(gameState.oppCards)}/${gameState.point}`
     }
 
-    getActions(myCards: Deck): boolean[] {
-        return Object.values(myCards).map((val) => val>0)
+    getActions(myCards: number[]): boolean[] {
+        return myCards.map((val) => val>0)
     }
 
     flattenState(gameState: GameState): number[] {
         // for tensorflow training
-        const my = Object.values(gameState.myCards)
-        const opp = Object.values(gameState.oppCards)
-        return my.concat(opp, gameState.point)
+        return gameState.myCards.concat(gameState.oppCards, gameState.point)
     }
 
     isEnd(gameState: GameState): boolean {
-        for (const [_, value] of Object.entries(gameState.myCards)) {
-            if (value > 0) {
-                return false
-            }
-        }
-        return true
+        return gameState.myCards.some((val) => val > 0)
     }
 
     filpState(gameState: GameState): GameState {
@@ -48,8 +41,8 @@ export class RPSCard {
         }
     }
 
-    getNextCard(cards: Deck, action: number) {
-        const nextCards: Deck = {...cards}
+    getNextCard(cards: number[], action: number) {
+        const nextCards = cards.slice()
         nextCards[action] -= 1
         return nextCards
     }
@@ -57,29 +50,23 @@ export class RPSCard {
     getNextPoint(myAction: number, oppAction: number, point: number[]): number[] {
         const nextPoint = point.slice()
         if (myAction === oppAction) {
+            // draw
             return nextPoint
         }
-        if (myAction === "J") {
+        if (myAction === 3) {
             nextPoint[0] += 1
             return nextPoint
         }
-        if (oppAction === "J") {
+        if (oppAction === 3) {
             nextPoint[1] += 1
             return nextPoint
         }
-        interface WinMapSig {
-            [key: string]: string
-        }
-        const winMap: WinMapSig = {
-            R: "P",
-            P: "S",
-            S: "R"
-        }
-        if (oppAction === winMap[myAction]) {
-            nextPoint[1] += 1
-        } else {
+        if (myAction === (oppAction + 1)%3) {
+            // my win
             nextPoint[0] += 1
         }
+        // opponent win
+        nextPoint[1] += 1
         return nextPoint
     }
 

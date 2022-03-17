@@ -1,12 +1,7 @@
 import * as tf from '@tensorflow/tfjs'
-import { Deck, GameState, RPSCard } from '.'
+import { GameState, RPSCard } from '.'
 
-const deck: Deck = {
-    R: 1,
-    P: 0,
-    S: 0,
-    J: 0
-}
+const deck = [0, 0, 1, 0]
 
 const state: GameState = {
     myCards: deck,

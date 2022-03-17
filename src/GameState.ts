@@ -1,13 +1,6 @@
-export interface Deck {
-    [key: string]: number
-    R: number
-    P: number
-    S: number
-    J: number
-}
-
 export interface GameState {
-    myCards: Deck
-    oppCards: Deck
+    // R, P, S, J
+    myCards: number[]
+    oppCards: number[]
     point: number[]
 }
